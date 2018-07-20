@@ -624,11 +624,8 @@ Copyright (C) 2018 Ali Naci Uysal (ali.uysal@tum.de), Ilias Gerostathopoulos(ger
 The mlrMBO-API project bundles / uses the projects found in 
 "https://github.com/alinaciuysal/mlrMBO-API/blob/master/dependencies/RPackageLicenses.csv" under different Licenses:
  - General Public License (GPL-2 / GPL -3),
- - BSL-1.0
  - BSD_2_clause, BSD_3_clause
  - MIT
- - LGPL (>= 2)
- - CC0
 
 Copyrights of different projects belong to their respective owners. Consult websites of these packages for this.
 All rights reserved.
