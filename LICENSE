@@ -617,12 +617,9 @@ reviewing courts shall apply local law that most closely approximates
 an absolute waiver of all civil liability in connection with the
 Program, unless a warranty or assumption of liability accompanies a
 copy of the Program in return for a fee.
-   
-Copyright (C) 2018 Ali Naci Uysal (ali.uysal@tum.de), Ilias Gerostathopoulos(gerostat@in.tum.de)
-
                    
-The mlrMBO-API project bundles / uses the projects found in 
-"https://github.com/alinaciuysal/mlrMBO-API/blob/master/dependencies/RPackageLicenses.csv" under different Licenses:
+The mlrMBO-API project bundles / uses the projects, whose dependencies can be found in 
+"https://github.com/alinaciuysal/mlrMBO-API/blob/master/dependencies/RPackageLicenses.csv", under different Licenses:
  - General Public License (GPL-2 / GPL -3),
  - BSD_2_clause, BSD_3_clause
  - MIT
