@@ -35,7 +35,7 @@ function(req, id) {
     wf = workflow_table$get(id)
     des = design_object_table$get(id)
     if(is.not.null(wf) && is.not.null(des)) {
-      ctrl = makeMBOControl(n.objectives = wf$objectives_number)
+      ctrl = makeMBOControl(n.objectives = wf$objectives_number, propose.points = wf$population_size)
       ctrl = setMBOControlTermination(ctrl, iters=wf$optimizer_iterations)
       if (wf$objectives_number > 1) {
         acquisition_criteria = makeMBOInfillCritDIB()
@@ -43,6 +43,7 @@ function(req, id) {
         acquisition_criteria = create_acquisition_criteria(wf$acquisition_method)
       }
       ctrl = setMBOControlInfill(ctrl, crit = acquisition_criteria)
+      ctrl = setMBOControlMultiPoint(ctrl, method = "cl")
       # opt_state_table$set(id, initSMBO(par.set = wf$params, design = des, control = ctrl, minimize = TRUE, noisy = TRUE))
       opt_state_table$set(id, initSMBO(par.set = wf$params,
                         design = des, control = ctrl, minimize = rep(TRUE, wf$objectives_number), noisy = FALSE))
