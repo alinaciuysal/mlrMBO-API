@@ -35,11 +35,17 @@ function(req, id) {
     wf = workflow_table$get(id)
     des = design_object_table$get(id)
     if(is.not.null(wf) && is.not.null(des)) {
-      ctrl = makeMBOControl()
+      ctrl = makeMBOControl(n.objectives = wf$objectives_number)
       ctrl = setMBOControlTermination(ctrl, iters=wf$optimizer_iterations)
-      acquisition_criteria = create_acquisition_criteria(wf$acquisition_method)
+      if (wf$objectives_number > 1) {
+        acquisition_criteria = makeMBOInfillCritDIB()
+      } else {
+        acquisition_criteria = create_acquisition_criteria(wf$acquisition_method)
+      }
       ctrl = setMBOControlInfill(ctrl, crit = acquisition_criteria)
-      opt_state_table$set(id, initSMBO(par.set = wf$params, design = des, control = ctrl, minimize = TRUE, noisy = TRUE))
+      # opt_state_table$set(id, initSMBO(par.set = wf$params, design = des, control = ctrl, minimize = TRUE, noisy = TRUE))
+      opt_state_table$set(id, initSMBO(par.set = wf$params,
+                        design = des, control = ctrl, minimize = rep(TRUE, wf$objectives_number), noisy = FALSE))
       list(result=jsonlite::unbox(TRUE))
     } else {
       msg <- "Please first create an initialDesign"
@@ -58,16 +64,28 @@ function(req, res, id, initial_design_values){
   if(is.not.null(id)) {
     initial_design = design_object_table$get(id)
     if(is.not.null(initial_design)) {
-      if (length(initial_design_values) == nrow(initial_design)) {
-        initial_design$y = c(initial_design_values)
-        design_object_table$set(id, initial_design)
-        list(result=jsonlite::unbox(TRUE))
+      if (workflow_table$get(id)$objectives_number>1) {
+        if (nrow(initial_design_values) == nrow(initial_design)) {
+          for(col in 1:ncol(initial_design_values)) {
+            key = paste("y", toString(col), sep="_")
+            initial_design[[key]] <- initial_design_values[,col]
+          }
+        } else {
+          msg <- "Provide exact number of results for initial design."
+          res$status <- 400 # Bad request
+          list(result=jsonlite::unbox(msg))
+        }
       } else {
-        msg <- "Provide exact number of results for initial design."
-        res$status <- 400 # Bad request
-        list(result=jsonlite::unbox(msg))
+        if (length(initial_design_values) == nrow(initial_design)) {
+          initial_design$y = c(initial_design_values)
+        } else {
+          msg <- "Provide exact number of results for initial design."
+          res$status <- 400 # Bad request
+          list(result=jsonlite::unbox(msg))
+        }
       }
-      
+      design_object_table$set(id, initial_design)
+      list(result=jsonlite::unbox(TRUE))
     } else {
       msg <- "Please first create initialDesign."
       res$status <- 400 # Bad request
