@@ -178,7 +178,12 @@ create_knobs <- function(id) {
     row <- knobs[i,]
     # do stuff with row (knob)
     knob_name = row$name
-    param = makeNumericParam(id = knob_name, lower = row$min, upper = row$max)
+    knob_type = row$type
+    if (knob_type == "int") {
+      param = makeIntegerParam(id = knob_name, lower = row$min, upper = row$max)
+    } else {
+      param = makeNumericParam(id = knob_name, lower = row$min, upper = row$max)
+    }
     knob_list[[knob_name]] = param
   }
   wf$params = makeParamSet(params=knob_list)
