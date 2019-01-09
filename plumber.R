@@ -104,6 +104,11 @@ function(req, res, id, knobs, value){
   if(is.not.null(id)) {
     opt.state = opt_state_table$get(id)
     if(is.not.null(opt.state) && is.not.null(value)) {
+
+      knobs["freshness_update_factor"] = as.integer(knobs["freshness_update_factor"])
+      knobs["freshness_cut_off_value"] = as.integer(knobs["freshness_cut_off_value"])
+      knobs["re_route_every_ticks"] = as.integer(knobs["re_route_every_ticks"])
+
       knobs = data.frame(knobs, stringsAsFactors = FALSE)
       opt.state <- updateSMBO(opt.state, x = knobs, y = value)
       opt_state_table$set(id, opt.state)
@@ -180,7 +185,7 @@ create_knobs <- function(id) {
     knob_name = row$name
     knob_type = row$type
     if (knob_type == "int") {
-      param = makeIntegerParam(id = knob_name, lower = row$min, upper = row$max)
+      param = makeIntegerParam(id = knob_name, lower = as.integer(row$min), upper = as.integer(row$max))
     } else {
       param = makeNumericParam(id = knob_name, lower = row$min, upper = row$max)
     }
