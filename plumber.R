@@ -105,9 +105,16 @@ function(req, res, id, knobs, value){
     opt.state = opt_state_table$get(id)
     if(is.not.null(opt.state) && is.not.null(value)) {
 
+      # TODO: remove hard-coded keys
       knobs["freshness_update_factor"] = as.integer(knobs["freshness_update_factor"])
       knobs["freshness_cut_off_value"] = as.integer(knobs["freshness_cut_off_value"])
       knobs["re_route_every_ticks"] = as.integer(knobs["re_route_every_ticks"])
+
+      knobs["route_random_sigma"] = as.double(knobs["route_random_sigma"])
+      knobs["exploration_percentage"] = as.double(knobs["exploration_percentage"])
+      knobs["max_speed_and_length_factor"] = as.double(knobs["max_speed_and_length_factor"])
+      knobs["average_edge_duration_factor"] = as.double(knobs["average_edge_duration_factor"])
+
 
       knobs = data.frame(knobs, stringsAsFactors = FALSE)
       opt.state <- updateSMBO(opt.state, x = knobs, y = value)
@@ -187,7 +194,7 @@ create_knobs <- function(id) {
     if (knob_type == "int") {
       param = makeIntegerParam(id = knob_name, lower = as.integer(row$min), upper = as.integer(row$max))
     } else {
-      param = makeNumericParam(id = knob_name, lower = row$min, upper = row$max)
+      param = makeNumericParam(id = knob_name, lower = as.double(row$min), upper = as.double(row$max))
     }
     knob_list[[knob_name]] = param
   }
